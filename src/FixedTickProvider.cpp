@@ -1,8 +1,20 @@
+#include <thread>
+
 #include "FixedTickProvider.h"
+
+using namespace std::this_thread;
+
+ash::tick::FixedTickProvider::FixedTickProvider() : FixedTickProvider(0.0) {}
+
+ash::tick::FixedTickProvider::FixedTickProvider(const double frameTime) :
+    _playing(false),
+    _signal(),
+    _frame_time(int(frameTime * 1000)),
+    _time_adjustment(1.0) {}
 
 ash::tick::FixedTickProvider::~FixedTickProvider()
 {
-    //dtor
+    this->stop();
 }
 
 void ash::tick::FixedTickProvider::add(const Listener& listener) {
@@ -18,7 +30,13 @@ bool ash::tick::FixedTickProvider::playing() const {
 }
 
 void ash::tick::FixedTickProvider::start() {
+    if (this->_playing) return;
+    // Don't let more than one thread run this loop at a time
     this->_playing = true;
+    while (this->_playing) {
+        std::this_thread::sleep_for(this->_frame_time);
+        this->dispatch_tick();
+    }
 }
 
 void ash::tick::FixedTickProvider::stop() {
@@ -33,3 +51,6 @@ double ash::tick::FixedTickProvider::time_adjustment() const {
     return this->_time_adjustment;
 }
 
+void ash::tick::FixedTickProvider::dispatch_tick() {
+    this->_signal.dispatch(this->_frame_time.count() * this->_time_adjustment);
+}
