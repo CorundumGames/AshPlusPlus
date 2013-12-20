@@ -11,3 +11,19 @@
 *.lai
 *.la
 *.a
+
+# Folders
+bin
+obj
+doc
+doxygen
+.cccc
+
+# Project files, etc. that we don't need to distribute
+*.layout
+*.cbp
+*.depend
+
+# Anything else that's easily generated
+*.log
+CppCheckResults.xml

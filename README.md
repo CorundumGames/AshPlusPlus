@@ -1,4 +1,4 @@
-AshPlusPlus
+Ash++
 ===========
 
-A C++ port of the Ash component-entity engine for games
+A C++ port of the Ash component-entity engine for games.
