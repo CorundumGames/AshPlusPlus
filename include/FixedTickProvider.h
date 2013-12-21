@@ -40,8 +40,6 @@ class FixedTickProvider : public ITickProvider
         milliseconds _frame_time;
         atomic<double> _time_adjustment;
         Signal1<double> _signal;
-
-
 };
 }
 }

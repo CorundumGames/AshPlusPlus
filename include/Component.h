@@ -3,14 +3,14 @@
 
 
 namespace ash {
-    namespace core {
-        class Component
-        {
-            public:
-            protected:
-            private:
-        };
-    }
+namespace core {
+/**
+ * The base class of all components.
+ */
+class Component
+{
+};
+}
 }
 
 #endif // COMPONENT_H
