@@ -8,9 +8,11 @@ using std::function;
 namespace ash {
 namespace tick {
 /**
- * The interface for a tick provider. A tick provider dispatches a regular update tick
- * to act as the heartbeat for the engine. It has methods to start and stop the tick and
- * to add and remove listeners for the tick.
+ * The interface for a tick provider. A tick provider dispatches a regular update tick to act as the heartbeat for the
+ * engine. It has methods to start and stop the tick and to add and remove listeners for the tick.
+ *
+ * FrameTickProvider is absent in Ash++ because it relies on the existence of a pre-existing canvas/screen/etc. that is
+ * constantly rendering, independent of what the programmer does.
  */
 class ITickProvider
 {
