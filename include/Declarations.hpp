@@ -7,7 +7,7 @@ namespace ash {
         class System;
         class Entity;
         class Engine;
-        template<class T> class Node;
+        class Node;
         template<class T> class NodeList;
         template<class T> class IFamily;
         template<class T> class ComponentMatchingFamily;
