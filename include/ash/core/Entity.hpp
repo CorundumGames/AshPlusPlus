@@ -31,9 +31,9 @@ namespace core {
 
 class Entity
 {
-    friend Engine;
+        friend Engine;
     public:
-        Entity(const string&);
+        explicit Entity(const string&);
         Entity();
         virtual ~Entity();
 

@@ -40,7 +40,7 @@ template<class T> class IFamily
          * A component has been removed from an entity. Test whether the entity's inclusion in this family's NodeList
          * should be modified.
          */
-        virtual void componentRemoveFromEntity(const Entity&, const type_info&) = 0;
+        virtual void componentRemovedFromEntity(const Entity&, const type_info&) = 0;
 
         /**
          * The family is about to be discarded. Clean up all properties as necessary. Usually, you will want to empty

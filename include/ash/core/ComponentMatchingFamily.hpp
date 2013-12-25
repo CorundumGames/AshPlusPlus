@@ -11,6 +11,8 @@
 #include "ash/core/IFamily.hpp"
 #include "ash/core/Entity.hpp"
 #include "ash/core/Engine.hpp"
+#include "ash/core/NodePool.hpp"
+#include "ash/core/Node.hpp"
 
 using std::string;
 using std::type_index;
@@ -48,20 +50,41 @@ class ComponentMatchingFamily : public IFamily<T>
          * Called by the engine when an entity has been added to it. We check if the entity should be in this family's
          * NodeList and add it if appropriate.
          */
-        void newEntity(const Entity&) = 0;
-
-
-        void removeEntity(const Entity&) = 0;
-
-
-        void componentAddedToEntity(const Entity&, const type_info&) = 0;
-
-
-        void componentRemoveFromEntity(const Entity&, const type_info&) = 0;
+        void newEntity(const Entity& entity) {
+            this->_add_if_match(entity);
+        }
 
         /**
-        * Removes all nodes from the NodeList.
-        */
+         * Called by the engine when an entity has been rmoved from it. We check if the entity is in this family's
+         * NodeList and remove it if so.
+         */
+        void removeEntity(const Entity& entity) {
+            this->_remove_if_match(entity);
+        }
+
+        /**
+         * Called by the engine when a component has been added to an entity. We check if the entity is not in this
+         * family's NodeList and should be, and add it if appropriate.
+         */
+        void componentAddedToEntity(const Entity& entity, const type_info& type) {
+            this->_add_if_match(entity);
+        }
+
+        /**
+         * Called by the engine when a component has been removed from an entity. We check if the removed component is
+         * required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it
+         * if so.
+         */
+        void componentRemovedFromEntity(const Entity& entity, const type_info& type) {
+            if (this->_components.count(entity)) {
+                // If we have the entity we're looking for...
+                this->_remove_if_match(entity);
+            }
+        }
+
+        /**
+         * Removes all nodes from the NodeList.
+         */
         void cleanUp() {
             for (const auto i : this->nodeList()) {
                 this->_entities.remove(i.entity);
@@ -77,12 +100,12 @@ class ComponentMatchingFamily : public IFamily<T>
         NodeList<T> const& nodeList() const = 0;
     private:
         shared_ptr<Engine> _engine;
-        unordered_map<shared_ptr<Entity>, Node<T>> _entities;
+        unordered_map<shared_ptr<Entity>, Node> _entities;
         unordered_map<type_index, string> _components;
 
         /**
-         * If the entity is not in this family's NodeList, tests the components of the entity to see
-         * if it should be in this NodeList and adds it if so.
+         * If the entity is not in this family's NodeList, tests the components of the entity to see if it should be in
+         * this NodeList and adds it if so.
          */
         void _add_if_match(const Entity& entity) {
             if (this->_entities.count(entity) <= 0) {
@@ -104,6 +127,26 @@ class ComponentMatchingFamily : public IFamily<T>
                 }
                 }*/
             }
+        }
+
+        void _remove_if_match(const Entity& entity) {
+            /*
+            if (entities.exists(entity))
+        {
+            var node:TNode = entities.get(entity);
+            entities.remove(entity);
+            nodeList.remove(node);
+            if (engine.updating)
+            {
+                nodePool.cache(node);
+                engine.updateComplete.add(releaseNodePoolCache);
+            }
+            else
+            {
+                nodePool.dispose(node);
+            }
+        }
+        */
         }
 };
 }

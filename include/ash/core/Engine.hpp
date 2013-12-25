@@ -15,6 +15,7 @@
 #include "ash/core/IFamily.hpp"
 #include "ash/signals/Signal.hpp"
 #include "ash/core/ComponentMatchingFamily.hpp"
+#include "ash/core/SystemList.hpp"
 
 using std::list;
 using std::string;
