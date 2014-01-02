@@ -23,24 +23,24 @@ template<class T> class IFamily
          * An entity has been added to the engine. It may already have components so test the entity for inclusion in
          * this family's NodeList.
          */
-        virtual void newEntity(const Entity&) = 0;
+        virtual void newEntity(const shared_ptr<Entity>) = 0;
 
         /**
          * An entity has been removed from the engine. If it's in this family's NodeList it should be removed.
          */
-        virtual void removeEntity(const Entity&) = 0;
+        virtual void removeEntity(const shared_ptr<Entity>) = 0;
 
         /**
          * A component has been added to an entity. Test whether the entity's inclusion in this family's NodeList should
          * be modified.
          */
-        virtual void componentAddedToEntity(const Entity&, const type_info&) = 0;
+        virtual void componentAddedToEntity(const shared_ptr<Entity>, const type_info&) = 0;
 
         /**
          * A component has been removed from an entity. Test whether the entity's inclusion in this family's NodeList
          * should be modified.
          */
-        virtual void componentRemovedFromEntity(const Entity&, const type_info&) = 0;
+        virtual void componentRemovedFromEntity(const shared_ptr<Entity>, const type_info&) = 0;
 
         /**
          * The family is about to be discarded. Clean up all properties as necessary. Usually, you will want to empty

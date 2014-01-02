@@ -54,12 +54,13 @@ class Engine
          *
          * @param entity The entity to add.
          */
-        void addEntity(Entity& entity);
+        void addEntity(const shared_ptr<Entity> entity);
+
 
         /**
-         * Remove an entity from the engine.
+         * Remove an Entity from the engine.
          *
-         * @param entity The entity to remove.
+         * @param entity The Entity to remove.
          */
         void removeEntity(Entity& entity);
 
@@ -90,8 +91,8 @@ class Engine
          */
         void addSystem(shared_ptr<System> const system, const int priority);
 
-
-        System getSystem(const type_info&) const;
+        template<class T>
+        shared_ptr<T> getSystem() const;
 
         /**
          * Remove a system from the engine.
@@ -120,6 +121,30 @@ class Engine
          * Returns true if the engine is currently in its update loop.
          */
         bool updating() const;
+
+        /**
+         * Get a collection of nodes from the engine, based on the type of the node required.
+         *
+         * The engine will create the appropriate NodeList if it doesn't already exist and will keep its contents up to
+         * date as entities are added to and removed from the engine.
+         *
+         * If a NodeList is no longer required, release it with the releaseNodeList method.
+         *
+         * @param nodeClass The type of node required.
+         * @return A linked list of all nodes of this type from all entities in the engine.
+         */
+        template<class T>
+        NodeList<T> getNodeList() {
+
+        }
+
+        vector<shared_ptr<Entity>> entities() const {
+            return vector<shared_ptr<Entity>>();
+        }
+
+        vector<shared_ptr<System>> systems() const {
+            return vector<shared_ptr<System>>();
+        }
 
         /**
          * Dispatched when the update loop ends. If you want to add and remove systems from the engine it is usually

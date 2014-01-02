@@ -1,6 +1,6 @@
 #ifndef NODE_H
 #define NODE_H
-
+#include <iostream>
 #include <memory>
 
 #include "Declarations.hpp"
@@ -23,19 +23,20 @@ namespace core {
 class Node
 {
     public:
-        Node() : entity(nullptr) {}
         virtual ~Node() {}
-
         /**
-         * Resets all components and/or nulls them.  Nulls out the entity pointer at a minimum, override to null any
+         * Resets all components and/or nulls them. Nulls out the entity pointer at a minimum, override to null any
          * components.
          */
         virtual void reset() {
-            this->entity = nullptr;
+            entity = nullptr;
         }
 
-    protected:
         shared_ptr<Entity> entity;
+
+    protected:
+        Node() : entity(nullptr) {}
+        // Don't create Nodes directly; you're supposed to subclass them, remember?
 };
 }
 }

@@ -33,6 +33,14 @@ class IComponentProvider
          * @return An object
          */
         virtual I const& identifier() const = 0;
+
+        virtual bool operator==(const decltype(*this) other) const {
+            return this->identifier() == other.identifier();
+        }
+
+        bool operator!=(const decltype(*this) other) const final {
+            return !(this->operator==(other));
+        }
 };
 }
 }

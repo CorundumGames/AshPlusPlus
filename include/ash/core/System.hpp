@@ -56,7 +56,7 @@ class System
          *
          * @param engine The engine the system was added to.
          */
-        virtual void addToEngine(Engine& engine) {}
+        virtual void addToEngine(const shared_ptr<Engine> engine) {}
 
         /**
          * Called just after the system is removed from the engine, after all calls to the update method. Override this
@@ -64,7 +64,7 @@ class System
          *
          * @param engine The engine the system was removed from.
          */
-        virtual void removeFromEngine(Engine& engine) {}
+        virtual void removeFromEngine(const shared_ptr<Engine> engine) {}
 
         /**
          * After the system is added to the engine, this method is called every frame until the system is removed from

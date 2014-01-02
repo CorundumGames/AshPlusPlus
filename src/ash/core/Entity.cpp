@@ -9,7 +9,7 @@ using std::type_info;
 
 int ash::core::Entity::_nameCount = 0;
 
-ash::core::Entity::Entity() : Entity(("_entity" + (++Entity::_nameCount))) {
+ash::core::Entity::Entity() : Entity("_entity" + (++Entity::_nameCount)) {
 }
 
 ash::core::Entity::Entity(const std::string& name) :
@@ -18,11 +18,10 @@ ash::core::Entity::Entity(const std::string& name) :
     _nameChanged()     ,
     _components()
 {
-    this->_name = (name.size() > 0) ? name : "_entity" + (++Entity::_nameCount);
+    this->_name = (!name.empty()) ? name : "_entity" + (++Entity::_nameCount);
 }
 
-ash::core::Entity::~Entity()
-{
+ash::core::Entity::~Entity() {
 }
 
 string ash::core::Entity::name() const {
@@ -38,15 +37,4 @@ void ash::core::Entity::name(const string& name) {
     }
 }
 
-ash::core::Entity& ash::core::Entity::add(const shared_ptr<Component> component) {
-    if (component == nullptr) {
-        // If we never actually got a pointer to a Component...
-        throw invalid_argument("Expected a pointer to a Component, received nullptr");
-    }
-
-    type_index type = type_index(typeid(Component));
-    this->_components[type] = component;
-    this->_componentAdded.dispatch(*this, type);
-    return *this;
-}
 

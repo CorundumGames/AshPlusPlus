@@ -26,11 +26,11 @@ class SystemList
         SystemList() : _systems() {}
         virtual ~SystemList() {}
 
-        void add(System& system) {
+        void add(shared_ptr<System> system) {
             this->_systems.insert(shared_ptr<System>(&system));
         }
 
-        void remove(System& system) {
+        void remove(shared_ptr<System> system) {
             this->_systems.erase(shared_ptr<System>(&system));
         }
 
@@ -45,11 +45,11 @@ class SystemList
             });
         }
 
-        auto begin() const -> decltype(this->_systems.begin()) {
+        auto begin() -> decltype(_systems.begin()) {
             return this->_systems.begin();
         }
 
-        auto end() const -> decltype(this->_systems.begin()) {
+        auto end() -> decltype(_systems.begin()) {
             return this->_systems.end();
         }
 };

@@ -38,8 +38,8 @@ class ComponentMatchingFamily : public IFamily<T>
          *
          * @param engine The engine that this family is managing the NodeList for.
          */
-        ComponentMatchingFamily(const Engine& engine) :
-            _engine(make_shared<Engine>(engine)),
+        ComponentMatchingFamily(const shared_ptr<Engine> engine) :
+            _engine(engine),
             _entities(),
             _components()
         {
@@ -50,7 +50,7 @@ class ComponentMatchingFamily : public IFamily<T>
          * Called by the engine when an entity has been added to it. We check if the entity should be in this family's
          * NodeList and add it if appropriate.
          */
-        void newEntity(const Entity& entity) {
+        void newEntity(const shared_ptr<Entity> entity) {
             this->_add_if_match(entity);
         }
 
@@ -58,7 +58,7 @@ class ComponentMatchingFamily : public IFamily<T>
          * Called by the engine when an entity has been rmoved from it. We check if the entity is in this family's
          * NodeList and remove it if so.
          */
-        void removeEntity(const Entity& entity) {
+        void removeEntity(const shared_ptr<Entity> entity) {
             this->_remove_if_match(entity);
         }
 
@@ -66,7 +66,7 @@ class ComponentMatchingFamily : public IFamily<T>
          * Called by the engine when a component has been added to an entity. We check if the entity is not in this
          * family's NodeList and should be, and add it if appropriate.
          */
-        void componentAddedToEntity(const Entity& entity, const type_info& type) {
+        void componentAddedToEntity(const shared_ptr<Entity> entity, const type_info& type) {
             this->_add_if_match(entity);
         }
 
@@ -75,7 +75,7 @@ class ComponentMatchingFamily : public IFamily<T>
          * required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it
          * if so.
          */
-        void componentRemovedFromEntity(const Entity& entity, const type_info& type) {
+        void componentRemovedFromEntity(const shared_ptr<Entity> entity, const type_info& type) {
             if (this->_components.count(entity)) {
                 // If we have the entity we're looking for...
                 this->_remove_if_match(entity);
@@ -100,14 +100,14 @@ class ComponentMatchingFamily : public IFamily<T>
         NodeList<T> const& nodeList() const = 0;
     private:
         shared_ptr<Engine> _engine;
-        unordered_map<shared_ptr<Entity>, Node> _entities;
+        unordered_map<shared_ptr<Entity>, shared_ptr<Node>> _entities;
         unordered_map<type_index, string> _components;
 
         /**
          * If the entity is not in this family's NodeList, tests the components of the entity to see if it should be in
          * this NodeList and adds it if so.
          */
-        void _add_if_match(const Entity& entity) {
+        void _add_if_match(const shared_ptr<Entity> entity) {
             if (this->_entities.count(entity) <= 0) {
                 // If we don't already have this entity on record...
                 for (const auto& c : this->_components) {
@@ -129,7 +129,7 @@ class ComponentMatchingFamily : public IFamily<T>
             }
         }
 
-        void _remove_if_match(const Entity& entity) {
+        void _remove_if_match(const shared_ptr<Entity> entity) {
             /*
             if (entities.exists(entity))
         {

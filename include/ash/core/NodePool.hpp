@@ -44,7 +44,7 @@ class NodePool
         T& get() {
             if (this->_nodes.size()) {
                 // If we have any nodes cached...
-                T element = this->_nodes.back();
+                T& element = this->_nodes.back();
                 this->_nodes.pop_back();
                 return element;
             }
@@ -56,7 +56,7 @@ class NodePool
         /**
          * Adds a node to the pool.
          */
-        void dispose(T& node) {
+        void dispose(const shared_ptr<T> node) {
             node.reset();
             this->_pool.push_back(make_shared(node));
         }
@@ -64,7 +64,7 @@ class NodePool
         /**
          * Adds a node to the cache
          */
-        void cache(const T& node) {
+        void cache(const shared_ptr<T> node) {
             this->_cache.push_back(make_shared(node));
         }
 

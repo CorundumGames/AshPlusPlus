@@ -9,6 +9,7 @@
 using std::find;
 using std::function;
 using std::logic_error;
+using std::invalid_argument;
 using std::shared_ptr;
 using std::make_shared;
 using std::bind;
@@ -17,31 +18,29 @@ using namespace std::placeholders;
 
 
 ash::core::Engine::~Engine() {
-    this->removeAllEntities();
-    this->removeAllSystems();
 }
 
-void ash::core::Engine::addEntity(Entity& entity) {
-    if (this->_entity_names.count(entity.name())) {
+void ash::core::Engine::addEntity(const shared_ptr<Entity> entity) {
+    if (entity == nullptr) {
+        // If we never actually got an Entity...
+        throw invalid_argument("Expected a pointer to an entity, received nullptr");
+    } else if (this->_entity_names.count(entity->name())) {
         // If we already have an Entity with this name...
-        throw logic_error("Entity with name " + entity.name() + " already exists, names must be unique");
+        throw logic_error("Entity with name " + entity->name() + " already exists, names must be unique");
     }
 
-    shared_ptr<Entity> ptr = make_shared<Entity>(entity);
-    this->_entities.push_back(ptr);
-    this->_entity_names[entity.name()] = ptr;
+    this->_entities.push_back(entity);
+    this->_entity_names[entity->name()] = entity;
 
-    entity._componentAdded.add(bind(&ash::core::Engine::componentAdded, this, _1, _2));
-    entity._componentRemoved.add(bind(&ash::core::Engine::componentRemoved, this, _1, _2));
-    entity._nameChanged.add(bind(&ash::core::Engine::entityNameChanged, this, _1, _2));
+    entity->_componentAdded.add(bind(&ash::core::Engine::componentAdded, this, _1, _2));
+    entity->_componentRemoved.add(bind(&ash::core::Engine::componentRemoved, this, _1, _2));
+    entity->_nameChanged.add(bind(&ash::core::Engine::entityNameChanged, this, _1, _2));
     for (const auto& family : _families) {
-        family.second->newEntity(entity);
+        family.second->newEntity(*entity);
     }
 
-    this->_entity_added.dispatch(entity);
+    this->_entity_added.dispatch(*entity);
 }
-
-
 
 void ash::core::Engine::removeEntity(Entity& entity) {
     entity._componentAdded.remove(bind(&ash::core::Engine::componentAdded, this, _1, _2));

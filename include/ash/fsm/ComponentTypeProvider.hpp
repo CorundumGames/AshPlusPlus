@@ -18,8 +18,7 @@ template<class C>
 class ComponentTypeProvider : public IComponentProvider<C, type_info>
 {
     public:
-        ComponentTypeProvider();
-        virtual ~ComponentTypeProvider();
+        ComponentTypeProvider() {}
 
         /**
          * Used to request a component from this provider

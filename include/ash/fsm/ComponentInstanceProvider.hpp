@@ -17,7 +17,7 @@ namespace fsm {
  * initialisation.
  */
 template<class C>
-class ComponentInstanceProvider : public IComponentProvider<C, C>
+class ComponentInstanceProvider : public IComponentProvider<C, shared_ptr<C>>
 {
     public:
         /**
@@ -25,8 +25,7 @@ class ComponentInstanceProvider : public IComponentProvider<C, C>
          *
          * @param instance The instance to return whenever a component is requested.
          */
-        ComponentInstanceProvider(const C& instance) : _instance(make_shared<C>(instance)) {}
-        virtual ~ComponentInstanceProvider() {}
+        ComponentInstanceProvider(const shared_ptr<C> instance) : _instance(instance) {}
 
         /**
          * Used to request a component from this provider
@@ -38,13 +37,13 @@ class ComponentInstanceProvider : public IComponentProvider<C, C>
         }
 
         /**
-         * Used to compare this provider with others. Any provider that returns the same component
-         * instance will be regarded as equivalent.
+         * Used to compare this provider with others. Any provider that returns the same component instance will be
+         * regarded as equivalent.
          *
          * @return The instance
          */
-        C const& identifier() const {
-            return this->getComponent();
+        shared_ptr<C> const& identifier() const {
+            return this->_instance;
         }
     private:
         shared_ptr<C> _instance;

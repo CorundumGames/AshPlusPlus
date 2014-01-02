@@ -15,7 +15,7 @@ namespace signals {
 template<typename...Types>
 class Signal
 {
-        using Listener = function<void(Types...)>;
+        using Listener = function<void(const Types&...)>;
     public:
         Signal() : _listeners(), _dispatching(false) {}
         virtual ~Signal() {}
@@ -42,7 +42,7 @@ class Signal
 
         void dispatch(const Types& ...args) {
             this->_dispatching = true;
-            for (Node i : this->_listeners) {
+            for (Node& i : this->_listeners) {
                 i(args...);
             }
 
@@ -63,10 +63,10 @@ class Signal
                 bool once() const {
                     return this->_once;
                 }
-                Listener& listener() const {
+                const Listener& listener() const {
                     return this->_listener;
                 }
-                void operator()(Types...args) {
+                void operator()(const Types& ...args) {
                     this->_listener(args...);
                 }
                 bool operator==(const Node& other) {
