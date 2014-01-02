@@ -7,12 +7,10 @@ namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
-class Collision : public Component
+struct Collision : public Component
 {
-    public:
-        explicit Collision(const double radius) : radius(radius);
-        double radius;
-
+    Collision(const double radius) : radius(radius) {}
+    double radius;
 };
 }
 }

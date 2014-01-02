@@ -1,11 +1,11 @@
 #include "asteroids/include/Asteroids.hpp"
 
-Asteroids::Asteroids()
+net::richardlord::asteroids::Asteroids::Asteroids()
 {
     //ctor
 }
 
-Asteroids::~Asteroids()
+net::richardlord::asteroids::Asteroids::~Asteroids()
 {
     //dtor
 }

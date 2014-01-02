@@ -2,7 +2,7 @@
 #define SPACESHIPDEATHVIEW_HPP
 
 #include <SFML/Graphics.hpp>
-#include "IAnimatable.hpp"
+#include "asteroids/include/graphics/IAnimatable.hpp"
 
 using sf::ConvexShape;
 using sf::Color;

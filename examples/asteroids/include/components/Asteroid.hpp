@@ -3,11 +3,10 @@
 
 #include "ash/core/Component.hpp"
 
-
 namespace net {
 namespace richardlord {
 namespace asteroids {
-namespace graphics {
+namespace components {
 class Asteroid : public Component
 {
 };

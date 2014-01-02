@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "ash/core/Component.hpp"
-#include "IAnimatable.hpp"
+#include "asteroids/include/graphics/IAnimatable.hpp"
 
 using std::shared_ptr;
 
@@ -17,7 +17,7 @@ namespace components {
 class Animation : public Component
 {
     public:
-        Animation(shared_ptr<IAnimatable> animation) : animation(animation) {};
+        Animation(shared_ptr<IAnimatable> animation) : animation(animation) {}
         virtual ~Animation() {}
         shared_ptr<IAnimatable> animation;
 };

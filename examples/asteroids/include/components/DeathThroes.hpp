@@ -7,12 +7,10 @@ namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
-class DeathThroes : public Component
+struct DeathThroes : public Component
 {
-    public:
-        explicit DeathThroes(const double duration) : countdown(duration);
-        double countdown;
-
+    explicit DeathThroes(const double duration) : countdown(duration);
+    double countdown;
 };
 }
 }
