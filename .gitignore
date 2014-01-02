@@ -26,4 +26,7 @@ doxygen
 
 # Anything else that's easily generated
 *.log
+CppCheckInput.txt
 CppCheckResults.xml
+ValgrindOut.xml
+*.out.*
