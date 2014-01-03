@@ -1,11 +1,11 @@
 #include "ash/core/EntityList.hpp"
 
-EntityList::EntityList()
+ash::core::EntityList::EntityList()
 {
     //ctor
 }
 
-EntityList::~EntityList()
+ash::core::EntityList::~EntityList()
 {
     //dtor
 }

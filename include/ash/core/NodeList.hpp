@@ -6,11 +6,17 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include <type_traits>
+#include <exception>
+#include <sstream>
 
 #include "Declarations.hpp"
 #include "ash/signals/Signal.hpp"
 #include "ash/core/Node.hpp"
 
+
+namespace ash {
+namespace core {
 using std::shared_ptr;
 using std::make_shared;
 using std::vector;
@@ -18,11 +24,12 @@ using std::remove;
 using std::iterator;
 using std::bidirectional_iterator_tag;
 using std::swap;
+using std::is_base_of;
+using std::is_same;
+using std::invalid_argument;
+using std::stringstream;
 
 using ash::signals::Signal1;
-
-namespace ash {
-namespace core {
 
 /**
  * A collection of nodes.
@@ -41,9 +48,11 @@ namespace core {
 template<class T>
 class NodeList
 {
-    class NodeListIterator;
+        class NodeListIterator;
     public:
-        NodeList() : _node_added(), _node_removed() {}
+        NodeList() : _node_added(), _node_removed() {
+            static_assert(is_base_of<Node, T>() && !is_same<Node, T>(), "NodeLists must contain Nodes");
+        }
         ~NodeList() {}
 
         /**
@@ -67,14 +76,19 @@ class NodeList
             return this->_nodes.empty();
         }
 
-        void add(const shared_ptr<Node> node) {
+        void add(const shared_ptr<T> node) {
             this->_nodes.push_back(node);
-            this->_node_added.dispatch(node);
+            this->_node_added.dispatch(*node);
         }
 
-        void remove(const shared_ptr<Node> node) {
-            std::remove(this->_nodes.begin(), this->_nodes.end(), make_shared<T>(node));
-            this->_node_removed.dispatch(node);
+        void remove(const shared_ptr<T> node) {
+            if (node == nullptr) {
+                stringstream error;
+                error << "Expected a shared pointer to a " << typeid(T).name() << ", got nullptr";
+                throw invalid_argument(error.str());
+            }
+            std::remove(this->_nodes.begin(), this->_nodes.end(), node);
+            this->_node_removed.dispatch(*node);
         }
 
         void removeAll() {
@@ -85,7 +99,7 @@ class NodeList
             this->_nodes.clear();
         }
 
-        void swap(const T& node1, const T& node2) {
+        void swap(shared_ptr<T> node1, shared_ptr<T> node2) {
 
         }
 
@@ -113,44 +127,44 @@ class NodeList
         Signal1<T> _node_added;
         Signal1<T> _node_removed;
         class NodeListIterator : public iterator<bidirectional_iterator_tag, T> {
-        public:
-            NodeListIterator(shared_ptr<T>* p) : ptr(p) {}
-            NodeListIterator(const NodeListIterator& other) = default;
-            NodeListIterator(NodeListIterator&& other) = default;
-            NodeListIterator& operator=(const NodeListIterator& other) = default;
-            NodeListIterator& operator=(NodeListIterator&& other) = default;
+            public:
+                NodeListIterator(shared_ptr<T>* p) : ptr(p) {}
+                NodeListIterator(const NodeListIterator& other) = default;
+                NodeListIterator(NodeListIterator&& other) = default;
+                NodeListIterator& operator=(const NodeListIterator& other) = default;
+                NodeListIterator& operator=(NodeListIterator&& other) = default;
 
-            T& operator*() {
-                return **(this->ptr);
-            }
+                T& operator*() {
+                    return **(this->ptr);
+                }
 
-            NodeListIterator& operator++() {
-                (this->ptr)++;
-                return *this;
-            }
+                NodeListIterator& operator++() {
+                    (this->ptr)++;
+                    return *this;
+                }
 
-            NodeListIterator& operator++(const int) {
-                return this->operator++();
-            }
+                NodeListIterator& operator++(const int) {
+                    return this->operator++();
+                }
 
-            NodeListIterator& operator--() {
-                (this->ptr)--;
-                return *this;
-            }
+                NodeListIterator& operator--() {
+                    (this->ptr)--;
+                    return *this;
+                }
 
-            NodeListIterator& operator--(const int) {
-                return this->operator--();
-            }
+                NodeListIterator& operator--(const int) {
+                    return this->operator--();
+                }
 
-            bool operator==(const NodeListIterator& other) const {
-                return this->ptr == other.ptr;
-            }
+                bool operator==(const NodeListIterator& other) const {
+                    return this->ptr == other.ptr;
+                }
 
-            bool operator!=(const NodeListIterator& other) const {
-                return !(this->operator==(other));
-            }
-        private:
-            shared_ptr<T>* ptr;
+                bool operator!=(const NodeListIterator& other) const {
+                    return !(this->operator==(other));
+                }
+            private:
+                shared_ptr<T>* ptr;
         };
 
 };

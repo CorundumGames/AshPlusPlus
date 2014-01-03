@@ -111,7 +111,7 @@ class ComponentMatchingFamily : public IFamily<T>
             if (this->_entities.count(entity) <= 0) {
                 // If we don't already have this entity on record...
                 for (const auto& c : this->_components) {
-                    if (!entity.has(c.first)) {
+                    if (!entity->has(c.first)) {
                         return;
                     }
                 }

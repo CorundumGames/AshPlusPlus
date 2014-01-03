@@ -51,8 +51,8 @@ public:
         }
     }
 
-    static void dispose(const T& component) {
-        _pool.push_back(make_shared<T>(component));
+    static void dispose(const shared_ptr<T> component) {
+        _pool.push_back(component);
     }
 
     static void empty() {
@@ -63,6 +63,9 @@ private:
 
     ComponentPool() = delete;
 };
+
+template<class T>
+vector<shared_ptr<T>> ComponentPool<T>::_pool;
 }
 }
 

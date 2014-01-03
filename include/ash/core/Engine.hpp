@@ -62,7 +62,7 @@ class Engine
          *
          * @param entity The Entity to remove.
          */
-        void removeEntity(Entity& entity);
+        void removeEntity(shared_ptr<Entity> entity);
 
         /**
          * Get an entity based on its name.

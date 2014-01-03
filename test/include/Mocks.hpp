@@ -144,10 +144,10 @@ class MockSystem : public System {
     public:
         MockSystem() : System() {}
 
-        void addToEngine(Engine& engine) override {
+        void addToEngine(const shared_ptr<Engine> engine) override {
         }
 
-        void removeFromEngine(Engine& engine) override {
+        void removeFromEngine(const shared_ptr<Engine> engine) override {
         }
 
         void update(const double time) override {

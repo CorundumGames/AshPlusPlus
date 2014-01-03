@@ -1,10 +1,14 @@
 #ifndef ICOMPONENTPROVIDER_H
 #define ICOMPONENTPROVIDER_H
 
+#include <type_traits>
+
 #include "Declarations.hpp"
 
 namespace ash {
 namespace fsm {
+using std::is_base_of;
+
 /**
  * This is the Interface for component providers. Component providers are used to supply components for states within an
  * EntityStateMachine. Ash includes three standard component providers, ComponentTypeProvider, ComponentInstanceProvider
@@ -33,15 +37,17 @@ class IComponentProvider
          * @return An object
          */
         virtual I const& identifier() const = 0;
-
-        virtual bool operator==(const decltype(*this) other) const {
-            return this->identifier() == other.identifier();
-        }
-
-        bool operator!=(const decltype(*this) other) const final {
-            return !(this->operator==(other));
-        }
 };
+
+template<class T>
+bool operator==(const T& a, const T& b) {
+    return a.identifier() == b.identifier();
+}
+
+template<class T>
+bool operator!=(const T& a, const T& b) {
+    return !(a == b);
+}
 }
 }
 

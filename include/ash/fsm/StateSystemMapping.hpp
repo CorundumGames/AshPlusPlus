@@ -7,26 +7,44 @@
 #include "ash/fsm/EngineState.hpp"
 #include "ash/fsm/ISystemProvider.hpp"
 
-using std::shared_ptr;
+
 
 namespace ash {
 namespace fsm {
+using std::shared_ptr;
+
+/**
+ * Used by the SystemState class to create the mappings of Systems to providers via a fluent interface.
+ */
 template<class S>
 class StateSystemMapping
 {
     public:
-        StateSystemMapping(const EngineState& creating_state, const shared_ptr<ISystemProvider> provider) :
+        /**
+         * Used internally, the constructor creates a component mapping. The constructor creates a
+         * SystemSingletonProvider as the default mapping, which will be replaced by more specific mappings if other
+         * methods are called.
+         *
+         * @param creatingState The SystemState that the mapping will belong to
+         * @param type The System type for the mapping
+         */
+        StateSystemMapping(const shared_ptr<EngineState> creating_state, const shared_ptr<ISystemProvider> provider) :
             _creating_state(creating_state),
             _provider(provider)
         {}
-        virtual ~StateSystemMapping() {}
 
+        /**
+         * Applies the priority to the provider that the System will be.
+         *
+         * @param priority The component provider to use.
+         * @return This StateSystemMapping, so more modifications can be applied.
+         */
         StateSystemMapping<S> const& withPriority(const int priority) {
             this->_provider->priority(priority);
             return *this;
         }
 
-        StateSystemMapping<S> const& addInstance(const System& system) {
+        StateSystemMapping<S> const& addInstance(const shared_ptr<System> system) {
             return this->_creating_state->addInstance(system);
         }
 

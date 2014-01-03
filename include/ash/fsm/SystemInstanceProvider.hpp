@@ -6,10 +6,11 @@
 #include "Declarations.hpp"
 #include "AbstractSystemProvider.hpp"
 
-using std::shared_ptr;
 
 namespace ash {
 namespace fsm {
+using std::shared_ptr;
+
 /**
  * This System provider always returns the same instance of the component. The system is passed to the provider at
  * initialisation.
@@ -18,7 +19,7 @@ template<class C>
 class SystemInstanceProvider : public AbstractSystemProvider<C, C>
 {
     public:
-        SystemInstanceProvider(const C& instance) : _instance(instance) {}
+        SystemInstanceProvider(const shared_ptr<C> instance) : _instance(instance) {}
 
         /**
          * Used to request a System from this provider
@@ -38,7 +39,7 @@ class SystemInstanceProvider : public AbstractSystemProvider<C, C>
         C const& identifier() const {
             return this->getSystem();
         }
-    private
+    private:
         shared_ptr<C> _instance;
 };
 }

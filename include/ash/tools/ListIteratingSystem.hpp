@@ -34,10 +34,10 @@ class ListIteratingSystem : public System
 
         virtual ~ListIteratingSystem() {}
     protected:
-        virtual void addToEngine(Engine& engine) override {
+        virtual void addToEngine(const shared_ptr<Engine> engine) override {
         }
 
-        virtual void removeFromEngine(Engine& engine) override {}
+        virtual void removeFromEngine(const shared_ptr<Engine> engine) override {}
 
         void update(const double time) override {
 

@@ -9,6 +9,10 @@ using std::function;
 
 namespace ash {
 namespace fsm {
+
+template<class C>
+using DynamicSystemProviderClosure = function<C(void)>;
+
 /**
  * This System provider returns results of a method call. The method is passed to the provider at initialisation.
  */

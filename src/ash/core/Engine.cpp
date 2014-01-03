@@ -36,22 +36,22 @@ void ash::core::Engine::addEntity(const shared_ptr<Entity> entity) {
     entity->_componentRemoved.add(bind(&ash::core::Engine::componentRemoved, this, _1, _2));
     entity->_nameChanged.add(bind(&ash::core::Engine::entityNameChanged, this, _1, _2));
     for (const auto& family : _families) {
-        family.second->newEntity(*entity);
+        family.second->newEntity(entity);
     }
 
     this->_entity_added.dispatch(*entity);
 }
 
-void ash::core::Engine::removeEntity(Entity& entity) {
-    entity._componentAdded.remove(bind(&ash::core::Engine::componentAdded, this, _1, _2));
-    entity._componentRemoved.remove(bind(&ash::core::Engine::componentRemoved, this, _1, _2));
-    entity._nameChanged.remove(bind(&ash::core::Engine::entityNameChanged, this, _1, _2));
+void ash::core::Engine::removeEntity(shared_ptr<Entity> entity) {
+    entity->_componentAdded.remove(bind(&ash::core::Engine::componentAdded, this, _1, _2));
+    entity->_componentRemoved.remove(bind(&ash::core::Engine::componentRemoved, this, _1, _2));
+    entity->_nameChanged.remove(bind(&ash::core::Engine::entityNameChanged, this, _1, _2));
     for (const auto& family : _families) {
         family.second->removeEntity(entity);
     }
-    this->_entities.remove(make_shared<Entity>(entity));
-    this->_entity_names.erase(entity.name());
-    this->_entity_removed.dispatch(entity);
+    this->_entities.remove(entity);
+    this->_entity_names.erase(entity->name());
+    this->_entity_removed.dispatch(*entity);
 }
 
 void ash::core::Engine::removeAllEntities() {
@@ -76,19 +76,19 @@ shared_ptr<Entity> const ash::core::Engine::getEntityByName(const string& name) 
 
 void ash::core::Engine::addSystem(shared_ptr<System> const system, const int priority) {
     system->priority(priority);
-    system->addToEngine(*this);
+    system->addToEngine(shared_ptr<Engine>(this));
     this->_systems.push_back(system);
     this->_systems.sort();
 }
 
 void ash::core::Engine::removeSystem(const shared_ptr<System> system) {
     this->_systems.remove(system);
-    system->removeFromEngine(*this);
+    system->removeFromEngine(shared_ptr<Engine>(this));
 }
 
 void ash::core::Engine::removeAllSystems() {
     for (const shared_ptr<System> i : this->_systems) {
-        i->removeFromEngine(*this);
+        i->removeFromEngine(shared_ptr<Engine>(this));
     }
 
     this->_systems.clear();

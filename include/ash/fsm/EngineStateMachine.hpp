@@ -9,23 +9,20 @@ using std::string;
 
 using ash::core::Engine;
 
-namespace ash
-{
-    namespace fsm
-    {
-        class EngineStateMachine
-        {
-            public:
-                EngineStateMachine(const Engine&);
-                virtual ~EngineStateMachine();
+namespace ash {
+namespace fsm {
+class EngineStateMachine {
+    public:
+        EngineStateMachine(const Engine&);
+        virtual ~EngineStateMachine();
 
-                EngineStateMachine addState(const string&, const EngineState&);
-                EngineState createState(const string&);
-                void changeState(const string&);
-            protected:
-            private:
-        };
-    }
+        EngineStateMachine addState(const string&, const EngineState&);
+        EngineState createState(const string&);
+        void changeState(const string&);
+    protected:
+    private:
+};
+}
 }
 
 #endif // ENGINESTATEMACHINE_H

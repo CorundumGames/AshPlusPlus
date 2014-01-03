@@ -27,11 +27,11 @@ class SystemList
         virtual ~SystemList() {}
 
         void add(shared_ptr<System> system) {
-            this->_systems.insert(shared_ptr<System>(&system));
+            this->_systems.insert(system);
         }
 
         void remove(shared_ptr<System> system) {
-            this->_systems.erase(shared_ptr<System>(&system));
+            this->_systems.erase(system);
         }
 
         void removeAll() {
