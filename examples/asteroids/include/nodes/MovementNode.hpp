@@ -17,11 +17,11 @@ namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace nodes {
-class MovementNode : public Node
+struct MovementNode : public Node
 {
-        MovementNode() {}
-        shared_ptr<Position> position;
-        shared_ptr<Motion> motion;
+    MovementNode() {}
+    shared_ptr<Position> position;
+    shared_ptr<Motion> motion;
 };
 }
 }

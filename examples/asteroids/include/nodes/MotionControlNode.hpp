@@ -19,7 +19,7 @@ namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace nodes {
-class MotionControlNode : public Node
+struct MotionControlNode : public Node
 {
     MotionControlNode() {}
     shared_ptr<Motion> motion;

@@ -4,16 +4,17 @@
 #include <SFML/Window/Keyboard.hpp>
 #include "ash/core/Component.hpp"
 
-using sf::Keyboard;
 
 namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
+using sf::Keyboard;
+typedef sf::Keyboard::Key Key;
 class GunControls : public Component
 {
     public:
-        GunControls(const Key& trigger) : _trigger(key) {}
+        GunControls(const Key& trigger) : _trigger(trigger) {}
         Key trigger() const {
             return this->_trigger;
         }

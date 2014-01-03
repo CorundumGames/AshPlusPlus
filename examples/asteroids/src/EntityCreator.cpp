@@ -1,14 +1,24 @@
 #include "EntityCreator.hpp"
 
-net::richardlord::asteroids::EntityCreator::EntityCreator()
-{
-    //ctor
+#include "ash/tools/ComponentPool.hpp"
+
+void net::richardlord::asteroids::EntityCreator::destroyEntity(const shared_ptr<Entity> entity) {
+    this->_engine->removeEntity(entity);
+    if (entity->has<Asteroid>()) {
+        ash::tools::ComponentPool<Asteroid>::dispose(entity->get<Asteroid>());
+    }
 }
 
-net::richardlord::asteroids::EntityCreator::~EntityCreator()
-{
-    //dtor
+shared_ptr<Entity> net::richardlord::asteroids::EntityCreator::createGame() {
+}
+shared_ptr<Entity> net::richardlord::asteroids::EntityCreator::createAsteroid(
+    const double radius, const double x, const double y) {
+
+}
+shared_ptr<Entity> net::richardlord::asteroids::EntityCreator::createSpaceship() {
 }
 
-void net::richardlord::asteroids::EntityCreator::destroyEntity(const Entity& entity) {
+shared_ptr<Entity> net::richardlord::asteroids::EntityCreator::createUserBullet(
+    const Gun& gun, const Position& position) {
+
 }

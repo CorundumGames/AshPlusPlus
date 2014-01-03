@@ -10,7 +10,7 @@ namespace components {
 class GameState : public Component
 {
     public:
-        GameState() : lives(3), level(0), score(0) {};
+        GameState() : lives(3), level(0), points(0) {};
         int lives;
         int level;
         int points;

@@ -11,9 +11,9 @@
 
 using std::shared_ptr;
 
-using net::richardlord::asteroids::nodes::GunControls;
-using net::richardlord::asteroids::nodes::Gun;
-using net::richardlord::asteroids::nodes::Position;
+using net::richardlord::asteroids::components::GunControls;
+using net::richardlord::asteroids::components::Gun;
+using net::richardlord::asteroids::components::Position;
 
 namespace net {
 namespace richardlord {

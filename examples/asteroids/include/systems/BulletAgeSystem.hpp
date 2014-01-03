@@ -27,7 +27,7 @@ class BulletAgeSystem : public ListIteratingSystem<BulletAgeNode>
             node.bullet->lifeRemaining -= time;
             if (node.bullet->lifeRemaining <= 0.0) {
                 // If this bullet should disappear...
-                this->_creator->destroyEntity(*(node.entity));
+                this->_creator->destroyEntity(node.entity);
             }
         }
 };

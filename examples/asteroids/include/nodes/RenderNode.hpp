@@ -24,11 +24,10 @@ namespace nodes {
  * values on node initialization, while properties and functions are ignored completely and can be used to make the node
  * API more useful.
  **/
-class RenderNode : public Node
+struct RenderNode : public Node
 {
-        RenderNode() {}
-        shared_ptr<Position> position;
-        shared_ptr<Display> display;
+    shared_ptr<Position> position;
+    shared_ptr<Display> display;
 };
 }
 }
