@@ -18,6 +18,7 @@
 namespace ash {
 namespace core {
 using std::shared_ptr;
+using std::static_pointer_cast;
 using std::make_shared;
 using std::vector;
 using std::remove;
@@ -49,10 +50,12 @@ template<class T>
 class NodeList
 {
         class NodeListIterator;
+        friend NodeList;
     public:
         NodeList() : _node_added(), _node_removed() {
-            static_assert(is_base_of<Node, T>() && !is_same<Node, T>(), "NodeLists must contain Nodes");
+            static_assert(is_base_of<Node, T>(), "NodeLists must contain Nodes");
         }
+
         ~NodeList() {}
 
         /**
@@ -101,6 +104,10 @@ class NodeList
 
         void swap(shared_ptr<T> node1, shared_ptr<T> node2) {
 
+        }
+
+        int size() const {
+            return this->_nodes.size();
         }
 
         void sort() {

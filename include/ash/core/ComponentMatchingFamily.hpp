@@ -6,31 +6,46 @@
 #include <typeinfo>
 #include <typeindex>
 #include <memory>
+#include <type_traits>
+
+#include <boost/any.hpp>
 
 #include "Declarations.hpp"
-#include "ash/core/IFamily.hpp"
 #include "ash/core/Entity.hpp"
 #include "ash/core/Engine.hpp"
 #include "ash/core/NodePool.hpp"
+#include "ash/core/NodeList.hpp"
 #include "ash/core/Node.hpp"
-
-using std::string;
-using std::type_index;
-using std::shared_ptr;
-using std::make_shared;
-using std::unordered_map;
 
 namespace ash {
 namespace core {
+
+using std::string;
+using std::type_index;
+using std::type_info;
+using std::shared_ptr;
+using std::make_shared;
+using std::unordered_map;
+using std::is_base_of;
+using std::is_same;
+
+using boost::any;
+using boost::any_cast;
+
+using ash::core::NodeList;
+
 /**
- * The default class for managing a NodeList. This class creates the NodeList and adds and removes nodes to/from the
- * list as the entities and the components in the engine change.
+ * Creates a NodeList and adds and removes nodes to/from the list as the entities and the components in the engine
+ * change. In the original Ash, this inherited from an interface called \c IFamily, but it turned out to be way too
+ * complicated to implement nicely in C++, due to polymorphism and templates not mixing well.
+ *
+ * Unfortunately, due to this lack of covariance and contravariance, the type of a ComponentMatchingFamily must be
+ * passed in at runtime, and the individual methods must be templated.
  *
  * It uses the basic entity matching pattern of an entity system - entities are added to the list if they contain
  * components matching all the public properties of the node class.
  */
-template<class T>
-class ComponentMatchingFamily : public IFamily<T>
+class ComponentMatchingFamily
 {
     public:
         /**
@@ -38,12 +53,19 @@ class ComponentMatchingFamily : public IFamily<T>
          *
          * @param engine The engine that this family is managing the NodeList for.
          */
-        ComponentMatchingFamily(const shared_ptr<Engine> engine) :
+        ComponentMatchingFamily(const shared_ptr<Engine> engine, const type_index& type) :
             _engine(engine),
             _entities(),
-            _components()
+            _components(),
+            _type(type),
+            _nodes()
         {
 
+        }
+
+        template<class T>
+        void setNewNodeList() {
+            this->_nodes = NodeList<T>();
         }
 
         /**
@@ -76,7 +98,7 @@ class ComponentMatchingFamily : public IFamily<T>
          * if so.
          */
         void componentRemovedFromEntity(const shared_ptr<Entity> entity, const type_info& type) {
-            if (this->_components.count(entity)) {
+            if (this->_components.count(type_index(type))) {
                 // If we have the entity we're looking for...
                 this->_remove_if_match(entity);
             }
@@ -85,21 +107,23 @@ class ComponentMatchingFamily : public IFamily<T>
         /**
          * Removes all nodes from the NodeList.
          */
+        template<class T>
         void cleanUp() {
-            for (const auto i : this->nodeList()) {
-                this->_entities.remove(i.entity);
+            for (const auto i : this->nodeList<T>()) {
+                this->_entities.erase(i.entity);
             }
 
-            this->nodeList.removeAll();
+            any_cast<NodeList<T>>(this->_nodes)->removeAll();
         }
 
-        /**
-         * Returns the NodeList managed by this class. This should be a reference that remains valid always since it is
-         * retained and reused by Systems that use the list. i.e. never recreate the list, always modify it in place.
-         */
-        NodeList<T> const& nodeList() const = 0;
+        template<class T>
+        NodeList<T> nodeList() {
+            return any_cast<NodeList<T>>(this->_nodes);
+        }
     private:
+        any _nodes;
         shared_ptr<Engine> _engine;
+        type_index _type;
         unordered_map<shared_ptr<Entity>, shared_ptr<Node>> _entities;
         unordered_map<type_index, string> _components;
 

@@ -123,6 +123,10 @@ class Entity
             return this->_components.count(type_index(typeid(T)));
         }
 
+        bool has(const type_index& type) const {
+            return this->_components.count(type);
+        }
+
         /**
          * Optional, give the entity a name. This can help with debugging and with serialising the entity.
          */

@@ -1,6 +1,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include <iostream>
 #include <algorithm>
 #include <memory>
 #include <list>
@@ -8,14 +9,19 @@
 #include <string>
 #include <typeinfo>
 #include <unordered_map>
+#include <type_traits>
+
+#include <boost/any.hpp>
 
 #include "Declarations.hpp"
 #include "ash/core/Entity.hpp"
 #include "ash/core/System.hpp"
-#include "ash/core/IFamily.hpp"
 #include "ash/signals/Signal.hpp"
 #include "ash/core/ComponentMatchingFamily.hpp"
 #include "ash/core/SystemList.hpp"
+
+namespace ash {
+namespace core {
 
 using std::list;
 using std::string;
@@ -24,18 +30,22 @@ using std::type_info;
 using std::unordered_map;
 using std::vector;
 using std::stable_sort;
+using std::is_base_of;
+using std::is_same;
+using std::enable_shared_from_this;
+
+using boost::any;
+using boost::any_cast;
 
 using ash::core::Component;
 using ash::core::Entity;
 using ash::core::System;
-using ash::core::IFamily;
+using ash::core::ComponentMatchingFamily;
 using ash::signals::Signal;
 using ash::signals::Signal0;
 using ash::signals::Signal1;
 
-namespace ash {
-namespace core {
-class Engine
+class Engine : public enable_shared_from_this<Engine>
 {
     public:
         Engine() :
@@ -46,7 +56,9 @@ class Engine
             _update_complete(),
             _entity_added(),
             _entity_removed(),
-            _updating(false) {}
+            _updating(false)
+        {
+        }
         virtual ~Engine();
 
         /**
@@ -78,18 +90,17 @@ class Engine
         void removeAllEntities();
 
         /**
-         * Add a system to the engine, and set its priority for the order in which the
-         * systems are updated by the engine update loop.
+         * Add a system to the engine, and set its priority for the order in which the systems are updated by the engine
+         * update loop.
          *
-         * <p>The priority dictates the order in which the systems are updated by the engine update
-         * loop. Lower numbers for priority are updated first. i.e. a priority of 1 is
-         * updated before a priority of 2.</p>
+         * The priority dictates the order in which the systems are updated by the engine update loop. Lower numbers for
+         * priority are updated first. i.e. a priority of 1 is updated before a priority of 2.
          *
          * @param system The system to add to the engine.
-         * @param priority The priority for updating the systems during the engine loop. A
-         * lower number means the system is updated sooner.
+         * @param priority The priority for updating the systems during the engine loop. A lower number means the system
+         * is updated sooner.
          */
-        void addSystem(shared_ptr<System> const system, const int priority);
+        void addSystem(const shared_ptr<System> system, const int priority);
 
         template<class T>
         shared_ptr<T> getSystem() const;
@@ -135,7 +146,36 @@ class Engine
          */
         template<class T>
         NodeList<T> getNodeList() {
+            static_assert(is_base_of<Node, T>() && !is_same<Node, T>(), "You must pick a Node");
 
+            type_index type(typeid(T));
+            if (this->_families.count(type)) {
+                return this->_families[type]->nodeList<T>();
+            }
+
+            shared_ptr<ComponentMatchingFamily> family(
+                make_shared<ComponentMatchingFamily>(this->shared_from_this(), type_index(typeid(T)))
+            );
+            family->setNewNodeList<T>();
+            this->_families[type] = family;
+
+            for (shared_ptr<Entity> e : this->_entities) {
+                family->newEntity(e);
+            }
+
+            return family->nodeList<T>();
+            /*
+            if (families.exists(nodeClass))
+            return cast(families.get(nodeClass)).nodeList;
+
+            var family:IFamily<TNode> = cast(Type.createInstance(familyClass, [nodeClass, this ]));
+            families.set(nodeClass, family);
+
+            for (entity in entityList)
+            family.newEntity(entity);
+
+            return family.nodeList;
+            */
         }
 
         vector<shared_ptr<Entity>> entities() const {
@@ -162,7 +202,8 @@ class Engine
         list<shared_ptr<Entity>> _entities;
         list<shared_ptr<System>> _systems;
         unordered_map<string, shared_ptr<Entity>> _entity_names;
-        unordered_map<type_index, shared_ptr<IFamily<Component>>> _families;
+        unordered_map<type_index, shared_ptr<ComponentMatchingFamily>> _families;
+        // ^ holds ComponentMatchingFamily<T>'s
         Signal0 _update_complete;
         Signal1<Entity> _entity_added;
         Signal1<Entity> _entity_removed;

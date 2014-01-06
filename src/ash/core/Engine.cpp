@@ -14,6 +14,10 @@ using std::shared_ptr;
 using std::make_shared;
 using std::bind;
 
+using ash::core::Entity;
+using boost::any;
+using boost::any_cast;
+
 using namespace std::placeholders;
 
 
@@ -74,9 +78,9 @@ shared_ptr<Entity> const ash::core::Engine::getEntityByName(const string& name) 
     }
 }
 
-void ash::core::Engine::addSystem(shared_ptr<System> const system, const int priority) {
+void ash::core::Engine::addSystem(const shared_ptr<System> system, const int priority) {
     system->priority(priority);
-    system->addToEngine(shared_ptr<Engine>(this));
+    system->addToEngine(this->shared_from_this());
     this->_systems.push_back(system);
     this->_systems.sort();
 }
