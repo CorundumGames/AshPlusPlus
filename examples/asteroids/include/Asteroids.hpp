@@ -1,6 +1,8 @@
 #ifndef ASTEROIDS_H
 #define ASTEROIDS_H
 
+#include <iostream>
+#include <functional>
 #include <memory>
 
 #include <SFML/Graphics.hpp>
@@ -26,8 +28,11 @@
 namespace net {
 namespace richardlord {
 namespace asteroids {
+using std::function;
+using std::bind;
 using std::shared_ptr;
 using std::make_shared;
+using namespace std::placeholders;
 
 using sf::RenderWindow;
 
@@ -42,19 +47,16 @@ class Asteroids
     public:
         Asteroids(const shared_ptr<RenderWindow> window, const int width, const int height) :
             _window(window),
-            _config(make_shared<GameConfig>()),
+            _config(make_shared<GameConfig>(width, height)),
             _engine(make_shared<Engine>()),
             _creator(make_shared<EntityCreator>(_engine))
         {
             this->prepare(width, height);
         }
         void start() {
-            /*
-            tickProvider = new FrameTickProvider( container );
-            tickProvider.add(engine.update);
-            tickProvider.start();
-            */
             this->_tick_provider = make_shared<FixedTickProvider>();
+            this->_tick_provider->add(bind(&Engine::update, this->_engine.get(), _1));
+            this->_tick_provider->start();
 
         }
     private:
@@ -65,27 +67,17 @@ class Asteroids
         shared_ptr<EntityCreator> _creator;
 
         void prepare(const int width, const int height) {
+            this->_engine->addSystem(make_shared<GameManager>(this->_creator, this->_config), SystemPriorities::PRE_UPDATE);
+            this->_engine->addSystem(make_shared<MotionControlSystem>(), SystemPriorities::UPDATE);
+            this->_engine->addSystem(make_shared<GunControlSystem>(this->_creator), SystemPriorities::UPDATE);
+            this->_engine->addSystem(make_shared<BulletAgeSystem>(this->_creator), SystemPriorities::UPDATE);
+            this->_engine->addSystem(make_shared<DeathThroesSystem>(this->_creator), SystemPriorities::UPDATE);
+            this->_engine->addSystem(make_shared<MovementSystem>(this->_config), SystemPriorities::MOVE);
+            this->_engine->addSystem(make_shared<CollisionSystem>(this->_creator), SystemPriorities::RESOLVE_COLLISIONS);
+            this->_engine->addSystem(make_shared<AnimationSystem>(), SystemPriorities::ANIMATE);
+            this->_engine->addSystem(make_shared<RenderSystem>(this->_window), SystemPriorities::RENDER);
 
-            /*
-            engine = new Engine();
-            creator = new EntityCreator( engine );
-            keyPoll = new KeyPoll( container.stage );
-            config = new GameConfig();
-            config.width = width;
-            config.height = height;
-
-            engine.addSystem(new GameManager( creator, config ), SystemPriorities.preUpdate);
-            engine.addSystem(new MotionControlSystem( keyPoll ), SystemPriorities.update);
-            engine.addSystem(new GunControlSystem( keyPoll, creator ), SystemPriorities.update);
-            engine.addSystem(new BulletAgeSystem( creator ), SystemPriorities.update);
-            engine.addSystem(new DeathThroesSystem( creator ), SystemPriorities.update);
-            engine.addSystem(new MovementSystem( config ), SystemPriorities.move);
-            engine.addSystem(new CollisionSystem( creator ), SystemPriorities.resolveCollisions);
-            engine.addSystem(new AnimationSystem(), SystemPriorities.animate);
-            engine.addSystem(new RenderSystem( container ), SystemPriorities.render);
-
-            creator.createGame();
-            */
+            this->_creator->createGame();
         }
 
 };

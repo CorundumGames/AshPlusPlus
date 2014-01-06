@@ -9,7 +9,7 @@ namespace asteroids {
 namespace components {
 struct DeathThroes : public Component
 {
-    explicit DeathThroes(const double duration) : countdown(duration) {};
+    explicit DeathThroes(const double duration) : countdown(duration) {}
     double countdown;
 };
 }

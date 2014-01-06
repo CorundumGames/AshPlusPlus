@@ -8,8 +8,8 @@ using std::hypot;
 using std::rand;
 using sf::Vector2;
 
-net::richardlord::asteroids::systems::CollisionSystem::CollisionSystem(EntityCreator& creator) :
-    _creator(&creator),
+net::richardlord::asteroids::systems::CollisionSystem::CollisionSystem(const shared_ptr<EntityCreator> creator) :
+    _creator(creator),
     _asteroids(),
     _bullets(),
     _spaceships()
@@ -23,20 +23,20 @@ net::richardlord::asteroids::systems::CollisionSystem::~CollisionSystem()
 }
 
 void net::richardlord::asteroids::systems::CollisionSystem::addToEngine(const shared_ptr<Engine> engine) {
-    *(this->_asteroids) = engine->getNodeList<AsteroidCollisionNode>();
-    *(this->_bullets) = engine->getNodeList<BulletCollisionNode>();
-    *(this->_spaceships) = engine->getNodeList<SpaceshipCollisionNode>();
+    this->_asteroids = engine->getNodeList<AsteroidCollisionNode>();
+    this->_bullets = engine->getNodeList<BulletCollisionNode>();
+    this->_spaceships = engine->getNodeList<SpaceshipCollisionNode>();
 }
 
 void net::richardlord::asteroids::systems::CollisionSystem::removeFromEngine(const shared_ptr<Engine> engine) {
-    this->_asteroids = nullptr;
-    this->_bullets = nullptr;
-    this->_spaceships = nullptr;
+    //this->_asteroids = nullptr;
+    //this->_bullets = nullptr;
+    //this->_spaceships = nullptr;
 }
 
 void net::richardlord::asteroids::systems::CollisionSystem::update(const double time) {
-    for (BulletCollisionNode b : *(this->_bullets)) {
-        for (AsteroidCollisionNode a : *(this->_asteroids)) {
+    for (BulletCollisionNode b : this->_bullets) {
+        for (AsteroidCollisionNode a : this->_asteroids) {
             Vector2<double> temp = a.position->position - b.position->position;
             if (hypot(temp.x, temp.y <= a.collision->radius)) {
                 this->_creator->destroyEntity(a.entity);
@@ -58,8 +58,8 @@ void net::richardlord::asteroids::systems::CollisionSystem::update(const double 
         }
     }
 
-    for (SpaceshipCollisionNode& s : *(this->_spaceships)) {
-        for (AsteroidCollisionNode& a : *(this->_asteroids)) {
+    for (SpaceshipCollisionNode& s : this->_spaceships) {
+        for (AsteroidCollisionNode& a : this->_asteroids) {
             Vector2<double> temp = a.position->position - s.position->position;
             if (hypot(temp.x, temp.y <= a.collision->radius + s.collision->radius)) {
                 s.spaceship->fsm.changeState("destroyed");

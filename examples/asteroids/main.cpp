@@ -2,18 +2,32 @@
 #include <ctime>
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <memory>
 
 #include "Declarations.hpp"
 
+#include "asteroids/include/Asteroids.hpp"
+
+using std::make_shared;
+using std::shared_ptr;
 using std::srand;
 using std::time;
+
+using sf::RenderWindow;
+
+const int WIDTH = 640;
+const int HEIGHT = 480;
 
 int main()
 {
     srand(time(NULL));
-    // Create the main window
-    sf::RenderWindow App(sf::VideoMode(800, 600), "SFML window");
 
+    // Create the main window
+    shared_ptr<RenderWindow> window(make_shared<RenderWindow>(sf::VideoMode(WIDTH, HEIGHT), "SFML window"));
+    net::richardlord::asteroids::Asteroids game(window, WIDTH, HEIGHT);
+
+    game.start();
+/*
     // Load a sprite to display
     sf::Texture texture;
 
@@ -43,6 +57,7 @@ int main()
         // Update the window
         App.display();
     }
+    */
 
     return EXIT_SUCCESS;
 }

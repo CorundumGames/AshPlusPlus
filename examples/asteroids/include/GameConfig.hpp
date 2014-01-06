@@ -6,6 +6,7 @@ namespace richardlord {
 namespace asteroids {
 struct GameConfig
 {
+    GameConfig(const double width, const double height) : width(width), height(height) {}
     double width;
     double height;
 };

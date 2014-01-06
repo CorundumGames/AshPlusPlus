@@ -18,7 +18,7 @@ using net::richardlord::asteroids::nodes::BulletAgeNode;
 class BulletAgeSystem : public ListIteratingSystem<BulletAgeNode>
 {
     public:
-        BulletAgeSystem(EntityCreator& creator) : ListIteratingSystem(), _creator(&creator) {}
+        BulletAgeSystem(const shared_ptr<EntityCreator> creator) : ListIteratingSystem(), _creator(creator) {}
         virtual ~BulletAgeSystem() {}
     private:
         shared_ptr<EntityCreator> _creator;

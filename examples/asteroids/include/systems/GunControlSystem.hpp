@@ -5,7 +5,7 @@
 
 #include "asteroids/include/nodes/GunControlNode.hpp"
 
-namespace ash {
+namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace systems {

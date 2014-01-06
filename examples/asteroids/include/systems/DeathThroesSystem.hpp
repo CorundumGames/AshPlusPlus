@@ -4,7 +4,7 @@
 #include "ash/tools/ListIteratingSystem.hpp"
 #include "asteroids/include/nodes/DeathThroesNode.hpp"
 
-namespace ash {
+namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace systems {

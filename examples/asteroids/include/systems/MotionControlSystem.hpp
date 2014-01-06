@@ -9,7 +9,7 @@
 
 #include "asteroids/include/nodes/MotionControlNode.hpp"
 
-namespace ash {
+namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace systems {

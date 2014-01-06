@@ -30,7 +30,7 @@ namespace systems {
 class CollisionSystem : public System
 {
     public:
-        CollisionSystem(EntityCreator& creator);
+        CollisionSystem(const shared_ptr<EntityCreator> creator);
         ~CollisionSystem();
 
         void addToEngine(const shared_ptr<Engine> engine) override;
@@ -40,9 +40,9 @@ class CollisionSystem : public System
         void update (const double time) override;
 
     private:
-        shared_ptr<NodeList<AsteroidCollisionNode>> _asteroids;
-        shared_ptr<NodeList<BulletCollisionNode>> _bullets;
-        shared_ptr<NodeList<SpaceshipCollisionNode>> _spaceships;
+        NodeList<AsteroidCollisionNode> _asteroids;
+        NodeList<BulletCollisionNode> _bullets;
+        NodeList<SpaceshipCollisionNode> _spaceships;
         shared_ptr<EntityCreator> _creator;
 };
 }

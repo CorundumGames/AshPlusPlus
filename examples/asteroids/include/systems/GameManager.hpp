@@ -11,7 +11,7 @@
 #include "asteroids/include/nodes/BulletCollisionNode.hpp"
 #include "asteroids/include/GameConfig.hpp"
 
-namespace ash {
+namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace systems {

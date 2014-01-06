@@ -13,7 +13,7 @@
 namespace net {
 namespace richardlord {
 namespace asteroids {
-namespace nodes {
+namespace systems {
 using std::shared_ptr;
 using sf::RenderWindow;
 
@@ -29,9 +29,11 @@ class RenderSystem : public System
         ~RenderSystem() {}
 
         void update(const double time) override {
+            this->_window->clear();
             for (const RenderNode& node : this->_nodes) {
                 this->_window->draw(*(node.display->displayObject));
             }
+            this->_window->display();
         }
 
 
