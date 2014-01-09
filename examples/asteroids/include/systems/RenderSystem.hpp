@@ -14,7 +14,9 @@ namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace systems {
+
 using std::shared_ptr;
+
 using sf::RenderWindow;
 
 using ash::core::System;
@@ -25,23 +27,11 @@ using net::richardlord::asteroids::nodes::RenderNode;
 class RenderSystem : public System
 {
     public:
-        RenderSystem(const shared_ptr<RenderWindow> window) : _nodes(), _window(window) {}
-        ~RenderSystem() {}
+        RenderSystem(const shared_ptr<RenderWindow> window);
 
-        void update(const double time) override {
-            this->_window->clear();
-            for (const RenderNode& node : this->_nodes) {
-                this->_window->draw(*(node.display->displayObject));
-            }
-            this->_window->display();
-        }
-
-
-
+        void update(const double time) override;
     protected:
-        void addToEngine(const shared_ptr<Engine> engine) override {
-            this->_nodes = engine->getNodeList<RenderNode>();
-        }
+        void addToEngine(const shared_ptr<Engine> engine) override;
     private:
         NodeList<RenderNode> _nodes;
         shared_ptr<RenderWindow> _window;

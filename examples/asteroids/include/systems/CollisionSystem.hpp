@@ -37,8 +37,7 @@ class CollisionSystem : public System
 
         void removeFromEngine(const shared_ptr<Engine> engine) override;
 
-        void update (const double time) override;
-
+        void update(const double time) override;
     private:
         NodeList<AsteroidCollisionNode> _asteroids;
         NodeList<BulletCollisionNode> _bullets;

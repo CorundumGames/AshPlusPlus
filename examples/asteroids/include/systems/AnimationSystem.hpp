@@ -8,6 +8,11 @@
 
 #include "asteroids/include/nodes/AnimationNode.hpp"
 
+namespace net {
+namespace richardlord {
+namespace asteroids {
+namespace systems {
+
 using std::bind;
 using std::mem_fn;
 using std::shared_ptr;
@@ -19,18 +24,12 @@ using net::richardlord::asteroids::nodes::AnimationNode;
 
 using namespace std::placeholders;
 
-namespace net {
-namespace richardlord {
-namespace asteroids {
-namespace systems {
 class AnimationSystem : public ListIteratingSystem<AnimationNode>
 {
     public:
-        AnimationSystem() : ListIteratingSystem() {}
+        AnimationSystem();
     private:
-        void updateNode(AnimationNode& node, const double time) {
-            node.animation->animation->animate(time);
-        }
+        void updateNode(AnimationNode& node, const double time);
 };
 }
 }

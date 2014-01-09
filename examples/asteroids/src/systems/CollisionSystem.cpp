@@ -23,9 +23,9 @@ net::richardlord::asteroids::systems::CollisionSystem::~CollisionSystem()
 }
 
 void net::richardlord::asteroids::systems::CollisionSystem::addToEngine(const shared_ptr<Engine> engine) {
-    this->_asteroids = engine->getNodeList<AsteroidCollisionNode>();
-    this->_bullets = engine->getNodeList<BulletCollisionNode>();
-    this->_spaceships = engine->getNodeList<SpaceshipCollisionNode>();
+    this->_asteroids = *engine->getNodeList<AsteroidCollisionNode>();
+    this->_bullets = *engine->getNodeList<BulletCollisionNode>();
+    this->_spaceships = *engine->getNodeList<SpaceshipCollisionNode>();
 }
 
 void net::richardlord::asteroids::systems::CollisionSystem::removeFromEngine(const shared_ptr<Engine> engine) {

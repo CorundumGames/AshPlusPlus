@@ -5,10 +5,8 @@
 
 #include "ash/core/Engine.hpp"
 #include "ash/core/Entity.hpp"
-#include "asteroids/include/components/Asteroid.hpp"
-#include "asteroids/include/components/Gun.hpp"
-#include "asteroids/include/components/Position.hpp"
-#include "asteroids/include/components/GameState.hpp"
+
+#include "asteroids/include/components/components.hpp"
 
 
 namespace net {

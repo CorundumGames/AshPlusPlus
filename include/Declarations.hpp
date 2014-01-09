@@ -9,7 +9,7 @@ namespace ash {
         class Engine;
         class Node;
         template<class T> class NodeList;
-        class ComponentMatchingFamily;
+        template<class T> class ComponentMatchingFamily;
     }
 
     namespace fsm {

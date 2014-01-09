@@ -3,7 +3,10 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
+#include "ash/tools/ListIteratingSystem.hpp"
+
 #include "asteroids/include/nodes/GunControlNode.hpp"
+#include "asteroids/include/EntityCreator.hpp"
 
 namespace net {
 namespace richardlord {
@@ -12,21 +15,17 @@ namespace systems {
 
 using sf::Keyboard;
 
+using ash::tools::ListIteratingSystem;
+
 using net::richardlord::asteroids::nodes::GunControlNode;
+using net::richardlord::asteroids::EntityCreator;
 
 class GunControlSystem : public ListIteratingSystem<GunControlNode>
 {
     public:
-        GunControlSystem(const shared_ptr<EntityCreator> creator) : ListIteratingSystem(), _creator(creator) {}
+        GunControlSystem(const shared_ptr<EntityCreator> creator);
     protected:
-        void updateNode(GunControlNode& node, const double time) override {
-            node.gun->shooting = Keyboard::isKeyPressed(node.control->trigger());
-            node.gun->timeSinceLastShot += time;
-            if (node.gun->shooting && node.gun->timeSinceLastShot >= node.gun->minimumShotInterval) {
-                this->_creator->createUserBullet(*(node.gun), *(node.position));
-                node.gun->timeSinceLastShot = 0;
-            }
-        }
+        void updateNode(GunControlNode& node, const double time) override;
     private:
         shared_ptr<EntityCreator> _creator;
 };
