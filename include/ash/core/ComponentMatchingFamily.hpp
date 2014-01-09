@@ -1,12 +1,12 @@
 #ifndef COMPONENTMATCHINGFAMILY_HPP
 #define COMPONENTMATCHINGFAMILY_HPP
 
-#include <unordered_map>
+#include <memory>
 #include <string>
 #include <typeinfo>
 #include <typeindex>
-#include <memory>
 #include <type_traits>
+#include <unordered_map>
 
 #include <boost/any.hpp>
 
@@ -20,31 +20,30 @@
 namespace ash {
 namespace core {
 
+using std::is_base_of;
+using std::is_same;
+using std::make_shared;
+using std::shared_ptr;
 using std::string;
 using std::type_index;
 using std::type_info;
-using std::shared_ptr;
-using std::make_shared;
 using std::unordered_map;
-using std::is_base_of;
-using std::is_same;
 
 using boost::any;
 using boost::any_cast;
 
 using ash::core::NodeList;
+using ash::core::NodePool;
 
 /**
  * Creates a NodeList and adds and removes nodes to/from the list as the entities and the components in the engine
  * change. In the original Ash, this inherited from an interface called \c IFamily, but it turned out to be way too
  * complicated to implement nicely in C++, due to polymorphism and templates not mixing well.
  *
- * Unfortunately, due to this lack of covariance and contravariance, the type of a ComponentMatchingFamily must be
- * passed in at runtime, and the individual methods must be templated.
- *
  * It uses the basic entity matching pattern of an entity system - entities are added to the list if they contain
  * components matching all the public properties of the node class.
  */
+template<class T>
 class ComponentMatchingFamily
 {
     public:
@@ -53,19 +52,19 @@ class ComponentMatchingFamily
          *
          * @param engine The engine that this family is managing the NodeList for.
          */
-        ComponentMatchingFamily(const shared_ptr<Engine> engine, const type_index& type) :
+        ComponentMatchingFamily(const shared_ptr<Engine> engine) :
             _engine(engine),
             _entities(),
             _components(),
-            _type(type),
-            _nodes()
+            _node_list(),
+            _node_pool()
         {
 
         }
 
-        template<class T>
         void setNewNodeList() {
-            this->_nodes = NodeList<T>();
+            this->_node_list = NodeList<T>();
+            this->_node_pool = NodePool<T>();
         }
 
         /**
@@ -107,23 +106,21 @@ class ComponentMatchingFamily
         /**
          * Removes all nodes from the NodeList.
          */
-        template<class T>
         void cleanUp() {
-            for (const auto i : this->nodeList<T>()) {
+            for (const auto i : this->nodeList()) {
                 this->_entities.erase(i.entity);
             }
 
-            any_cast<NodeList<T>>(this->_nodes)->removeAll();
+            any_cast<NodeList<T>>(this->_node_list)->removeAll();
         }
 
-        template<class T>
         NodeList<T> nodeList() {
-            return any_cast<NodeList<T>>(this->_nodes);
+            return any_cast<NodeList<T>>(this->_node_list);
         }
     private:
-        any _nodes;
+        any _node_list;
+        any _node_pool;
         shared_ptr<Engine> _engine;
-        type_index _type;
         unordered_map<shared_ptr<Entity>, shared_ptr<Node>> _entities;
         unordered_map<type_index, string> _components;
 
@@ -139,24 +136,19 @@ class ComponentMatchingFamily
                         return;
                     }
                 }
-                /*
-                var node:TNode = nodePool.get();
-                node.entity = entity;
-                for (componentClass in components.keys())
-                {
-                    Reflect.setField(node, components.get(componentClass), entity.get(componentClass));
-                }
-                entities.set(entity, node);
-                nodeList.add(node);
-                }
-                }*/
+
+                shared_ptr<Node> node = this->_node_pool.getNode();
+                node->entity = entity;
+                node->set();
+                this->_entities[entity] = node;
+                any_cast<NodeList<Node>>(this->_node_list).add(node);
             }
         }
 
         void _remove_if_match(const shared_ptr<Entity> entity) {
             /*
             if (entities.exists(entity))
-        {
+            {
             var node:TNode = entities.get(entity);
             entities.remove(entity);
             nodeList.remove(node);
@@ -169,9 +161,11 @@ class ComponentMatchingFamily
             {
                 nodePool.dispose(node);
             }
+            }
+            */
         }
-        */
-        }
+
+        friend Engine;
 };
 }
 }

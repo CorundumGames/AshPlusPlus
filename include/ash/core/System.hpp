@@ -26,27 +26,19 @@ using namespace std::rel_ops;
  */
 class System
 {
-    friend Engine;
+
     public:
-        System(const int priority) : _priority(priority), previous(), next() {}
-        System() : System(0) {}
+        System(const int priority);
+        System();
         virtual ~System();
 
-        int priority() const {
-            return this->_priority;
-        }
+        int priority() const;
 
-        void priority(const int priority) {
-            this->_priority = priority;
-        }
+        void priority(const int priority);
 
-        bool operator==(const System& other) const {
-            return this->priority() == other.priority();
-        }
+        bool operator==(const System& other) const;
 
-        bool operator<(const System& other) const {
-            return this->priority() < other.priority();
-        }
+        bool operator<(const System& other) const;
     protected:
         int _priority;
 
@@ -56,7 +48,7 @@ class System
          *
          * @param engine The engine the system was added to.
          */
-        virtual void addToEngine(const shared_ptr<Engine> engine) {}
+        virtual void addToEngine(const shared_ptr<Engine> engine);
 
         /**
          * Called just after the system is removed from the engine, after all calls to the update method. Override this
@@ -64,7 +56,7 @@ class System
          *
          * @param engine The engine the system was removed from.
          */
-        virtual void removeFromEngine(const shared_ptr<Engine> engine) {}
+        virtual void removeFromEngine(const shared_ptr<Engine> engine);
 
         /**
          * After the system is added to the engine, this method is called every frame until the system is removed from
@@ -78,8 +70,7 @@ class System
          */
         virtual void update(const double time) = 0;
     private:
-        unique_ptr<System> previous;
-        unique_ptr<System> next;
+        friend Engine;
 };
 }
 }
