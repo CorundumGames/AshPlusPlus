@@ -1,15 +1,19 @@
-#ifndef MOTION_H
-#define MOTION_H
+#ifndef MOTION_HPP
+#define MOTION_HPP
 
 #include <SFML/System/Vector2.hpp>
 #include "ash/core/Component.hpp"
 
-using sf::Vector2;
 
 namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
+
+using sf::Vector2;
+
+using ash::core::Component;
+
 class Motion : public Component
 {
     public:
@@ -17,7 +21,7 @@ class Motion : public Component
             velocity(velocityX, velocityY),
             angularVelocity(angularVelocity),
             damping(damping)
-            {}
+        {}
         Vector2<double> velocity;
         double angularVelocity;
         double damping;
@@ -27,4 +31,4 @@ class Motion : public Component
 }
 }
 
-#endif // MOTION_H
+#endif // MOTION_HPP

@@ -5,12 +5,16 @@
 
 #include "ash/core/Component.hpp"
 
-using sf::Vector2;
 
 namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
+
+using sf::Vector2;
+
+using ash::core::Component;
+
 class Gun : public Component
 {
     public:
@@ -23,7 +27,7 @@ class Gun : public Component
             minimumShotInterval(minimumShotInterval),
             bulletLifeTime(bulletLifeTime),
             shooting(false)
-        {};
+        {}
 
         Vector2<double> offsetFromParent;
         double timeSinceLastShot;

@@ -7,17 +7,20 @@
 
 #include "ash/core/Component.hpp"
 
-using std::shared_ptr;
-
-using sf::Drawable;
-
 namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
+
+using std::shared_ptr;
+
+using sf::Drawable;
+
+using ash::core::Component;
+
 struct Display : public Component
 {
-    Display() {}
+    Display(const shared_ptr<Drawable> display) : displayObject(display) {}
     shared_ptr<Drawable> displayObject;
 };
 }

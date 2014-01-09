@@ -7,12 +7,15 @@ namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
-class Bullet : public Component
+
+using ash::core::Component;
+
+struct Bullet : public Component
 {
-    public:
-        explicit Bullet(const double lifetime) : lifeRemaining(lifetime) {}
-        double lifeRemaining;
+    explicit Bullet(const double lifetime) : lifeRemaining(lifetime) {}
+    double lifeRemaining;
 };
+
 }
 }
 }

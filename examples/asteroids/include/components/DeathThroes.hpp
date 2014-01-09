@@ -7,6 +7,9 @@ namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
+
+using ash::core::Component;
+
 struct DeathThroes : public Component
 {
     explicit DeathThroes(const double duration) : countdown(duration) {}

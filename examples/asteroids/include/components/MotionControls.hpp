@@ -4,12 +4,15 @@
 #include <SFML/Window/Keyboard.hpp>
 #include "ash/core/Component.hpp"
 
-using sf::Keyboard;
 
 namespace net {
 namespace richardlord {
 namespace asteroids {
 namespace components {
+
+using sf::Keyboard;
+typedef sf::Keyboard::Key Key;
+
 class MotionControls : public Component
 {
     public:
